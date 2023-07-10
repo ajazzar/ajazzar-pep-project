@@ -44,12 +44,12 @@ public class AccountDAO {
             preparedStatement.setString(1, account.getUsername());
             preparedStatement.setString(2, account.getPassword());
             preparedStatement.executeUpdate();
-            ResultSet pkeyResultSet = preparedStatement.getGeneratedKeys();
-            if(pkeyResultSet.next()){
-                int generated_author_id = (int) pkeyResultSet.getLong(1);
-                return new Account(generated_author_id, account.getUsername(), account.getPassword());
-            }
-            return account;
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+    if (generatedKeys.next()) {
+        account.setAccount_id(generatedKeys.getInt(1)); // Here's the magic.
+        
+    }
+    return account;
         }catch(SQLException e){
             System.out.println(e.getMessage());
         }

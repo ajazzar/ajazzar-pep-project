@@ -7,6 +7,7 @@ import Model.Message;
 import Service.AccountService;
 import Service.MessageService;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 /**
@@ -38,22 +39,21 @@ public class SocialMediaController {
     /**
      * This is an example handler for an example endpoint.
      * @param context The Javalin Context object manages information about both the HTTP request and response.
+     * @throws JsonProcessingException
+     * @throws JsonMappingException
      */
-    private void accountHandler(Context context) throws JsonProcessingException {
+    private void accountHandler(Context context) throws JsonMappingException, JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         
         Account book = mapper.readValue(context.body(), Account.class);
         Account addedAccount = accountService.addAccount(book);
         
-        if(addedAccount==null){
-            context.status(400);
-            
-        }else{
-            
+        if(addedAccount!=null){
             context.json(mapper.writeValueAsString(addedAccount));
-            
-            System.out.println("------"+addedAccount);
+        }else{
+            context.status(400);
         }
+        
     }
     private void getAllAccountsHandler(Context ctx) {
         List<Account> authors = accountService.getAllAccounts();
