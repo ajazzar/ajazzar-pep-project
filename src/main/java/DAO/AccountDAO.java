@@ -8,12 +8,13 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class AccountDAO {
-    public List<Account> getAllAccounts(){
+    public HashSet<Account> getAllAccounts(){
         Connection connection = ConnectionUtil.getConnection();
-        List<Account> accounts = new ArrayList<>();
+        HashSet<Account> accounts = new HashSet<>();
         try {
             //Write SQL logic here
             String sql = "Select * from Account";
@@ -37,18 +38,22 @@ public class AccountDAO {
             
             //Write SQL logic here
             String sql = "Insert into Account (username, password) values (?,?)" ;
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            int generatedkey=0;
+            PreparedStatement preparedStatement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
 
             //write preparedStatement's setString and setInt methods here.
             // preparedStatement.setInt(1, account.getAccount_id());
             preparedStatement.setString(1, account.getUsername());
             preparedStatement.setString(2, account.getPassword());
             preparedStatement.executeUpdate();
-            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
-    if (generatedKeys.next()) {
-        account.setAccount_id(generatedKeys.getInt(1)); // Here's the magic.
-        
+           ResultSet rs = preparedStatement.getGeneratedKeys();
+    if(rs.next()) {
+    //In this exp, the autoKey val is in 1st col
+    generatedkey=rs.getInt(1);   
+               System.out.println("--" + generatedkey); 
+               account.setAccount_id(generatedkey);
     }
+            
     return account;
         }catch(SQLException e){
             System.out.println(e.getMessage());

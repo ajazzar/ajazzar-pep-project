@@ -9,6 +9,8 @@ import Service.MessageService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.HashSet;
 import java.util.List;
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller. The endpoints you will need can be
@@ -49,14 +51,15 @@ public class SocialMediaController {
         Account addedAccount = accountService.addAccount(book);
         
         if(addedAccount!=null){
-            context.json(mapper.writeValueAsString(addedAccount));
+            System.out.println("--"+addedAccount);
+            context.status(200).json(mapper.writeValueAsString(addedAccount));
         }else{
             context.status(400);
         }
         
     }
     private void getAllAccountsHandler(Context ctx) {
-        List<Account> authors = accountService.getAllAccounts();
+        HashSet<Account> authors = accountService.getAllAccounts();
         ctx.json(authors);
     }
 }

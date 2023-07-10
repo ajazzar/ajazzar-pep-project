@@ -4,7 +4,8 @@ package Service;
 import DAO.AccountDAO;
 import Model.Account;
 
-import java.util.List;
+import java.util.HashSet;
+
 public class AccountService {
     private AccountDAO accountDAO;
     public AccountService(){
@@ -14,13 +15,13 @@ public class AccountService {
         this.accountDAO = accountDAO;
     }
 
-    public List<Account> getAllAccounts() {
+    public HashSet<Account> getAllAccounts() {
         return accountDAO.getAllAccounts();
     }
     
     public Account addAccount(Account account) {        
-        
-        List<Account> list = accountDAO.getAllAccounts();
+        HashSet<Account> list = new HashSet<>();
+        list = accountDAO.getAllAccounts();
         boolean ans = list.contains(account);
       
         if (ans || account.username=="" || account.password.length() < 4) {
