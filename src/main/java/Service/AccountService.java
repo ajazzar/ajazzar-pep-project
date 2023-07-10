@@ -6,7 +6,7 @@ import Model.Account;
 
 import java.util.List;
 public class AccountService {
-    public AccountDAO accountDAO;
+    private AccountDAO accountDAO;
     public AccountService(){
         accountDAO = new AccountDAO();
     }
@@ -19,14 +19,16 @@ public class AccountService {
     }
     
     public Account addAccount(Account account) {        
-        var list = accountDAO.getAllAccounts();
         
+        List<Account> list = accountDAO.getAllAccounts();
         boolean ans = list.contains(account);
-        if (ans) {
+      
+        if (ans || account.username=="" || account.password.length() < 4) {
             return null;
         } else {
-            accountDAO.insertAccount(account);
-            return account;
+            Account name = accountDAO.insertAccount(account);
+           
+            return name;
         }
         
     }

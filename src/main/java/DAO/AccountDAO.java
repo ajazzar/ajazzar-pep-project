@@ -34,14 +34,21 @@ public class AccountDAO {
     public Account insertAccount(Account account){
         Connection connection = ConnectionUtil.getConnection();
         try {
+            
             //Write SQL logic here
-            String sql = "Insert into Account (username, password) values (?, ?)" ;
+            String sql = "Insert into Account (username, password) values (?,?)" ;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
             //write preparedStatement's setString and setInt methods here.
+            // preparedStatement.setInt(1, account.getAccount_id());
             preparedStatement.setString(1, account.getUsername());
             preparedStatement.setString(2, account.getPassword());
             preparedStatement.executeUpdate();
+            ResultSet pkeyResultSet = preparedStatement.getGeneratedKeys();
+            if(pkeyResultSet.next()){
+                int generated_author_id = (int) pkeyResultSet.getLong(1);
+                return new Account(generated_author_id, account.getUsername(), account.getPassword());
+            }
             return account;
         }catch(SQLException e){
             System.out.println(e.getMessage());

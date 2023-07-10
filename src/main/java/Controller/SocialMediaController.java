@@ -8,6 +8,7 @@ import Service.AccountService;
 import Service.MessageService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller. The endpoints you will need can be
  * found in readme.md as well as the test cases. You should
@@ -28,8 +29,9 @@ public class SocialMediaController {
      */
     public Javalin startAPI() {
         Javalin app = Javalin.create();
+        app.get("/register", this::getAllAccountsHandler);
         app.post("/register", this::accountHandler);
-
+        
         return app;
     }
 
@@ -37,16 +39,26 @@ public class SocialMediaController {
      * This is an example handler for an example endpoint.
      * @param context The Javalin Context object manages information about both the HTTP request and response.
      */
-    private void accountHandler(Context ctx) throws JsonProcessingException {
-            ObjectMapper mapper = new ObjectMapper();
-            Account account = mapper.readValue(ctx.body(), Account.class);
-            Account addedAccount = accountService.addAccount(account);
-            if(addedAccount!=null){
-                ctx.json(mapper.writeValueAsString(addedAccount));
-            }else{
-                ctx.status(400);
-            }
+    private void accountHandler(Context context) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        
+        Account book = mapper.readValue(context.body(), Account.class);
+        Account addedAccount = accountService.addAccount(book);
+        
+        if(addedAccount==null){
+            context.status(400);
+            
+        }else{
+            
+            context.json(mapper.writeValueAsString(addedAccount));
+            
+            System.out.println("------"+addedAccount);
         }
     }
+    private void getAllAccountsHandler(Context ctx) {
+        List<Account> authors = accountService.getAllAccounts();
+        ctx.json(authors);
+    }
+}
 
 
