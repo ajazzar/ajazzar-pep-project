@@ -4,7 +4,9 @@ package Service;
 import DAO.AccountDAO;
 import Model.Account;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Optional;
 
 public class AccountService {
     private AccountDAO accountDAO;
@@ -15,19 +17,33 @@ public class AccountService {
         this.accountDAO = accountDAO;
     }
 
-    public HashSet<Account> getAllAccounts() {
+    public ArrayList<Account> getAllAccounts() {
         return accountDAO.getAllAccounts();
     }
+    public Account getAccount(Account account) {
+        ArrayList<Account> list = new ArrayList<>();
+        Account object = new Account();
+        list.addAll(accountDAO.getAllAccounts());
+        boolean ans = list.contains(account);
+        if (ans==false && account.username=="" && account.password.length() < 4) {
+            return null;
+        }
+        else{
+            object=(AccountDAO.getAccount(account));   
+        }
+            return object;           
+}
+
     
     public Account addAccount(Account account) {        
-        HashSet<Account> list = new HashSet<>();
+        ArrayList<Account> list = new ArrayList<>();
         list = accountDAO.getAllAccounts();
         boolean ans = list.contains(account);
       
         if (ans || account.username=="" || account.password.length() < 4) {
             return null;
         } else {
-            Account name = accountDAO.insertAccount(account);
+            Account name = AccountDAO.insertAccount(account);
            
             return name;
         }

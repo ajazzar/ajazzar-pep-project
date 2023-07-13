@@ -1,5 +1,7 @@
 package Model;
 
+import java.util.HashSet;
+
 /**
  * This is a class that models an Account.
  *
@@ -114,5 +116,7 @@ public class Account {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 '}';
+    }
+    public void add(HashSet<Account> account) {
     }
 }
