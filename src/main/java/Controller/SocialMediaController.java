@@ -1,5 +1,6 @@
 package Controller;
-
+import java.net.*;
+import java.io.*;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import Model.Account;
@@ -11,15 +12,24 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
+import java.net.URL;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.regex.Matcher;
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller. The endpoints you will need can be
  * found in readme.md as well as the test cases. You should
  * refer to prior mini-project labs and lecture materials for guidance on how a controller may be built.
  */
+import java.util.regex.Pattern;
 public class SocialMediaController {
     MessageService messageService;
     AccountService accountService;
@@ -40,6 +50,8 @@ public class SocialMediaController {
         app.post("/login", this::loginHandler);
         app.post("/messages", this::messageHandler);
         app.get("/messages", this::getAllMessagesHandler);
+        app.get("/messages/{message_id}", this::getMessageById);
+        app.delete("/messages/{message_id}", this::deleteMessageById);
         return app;
     }
 
@@ -85,20 +97,43 @@ public class SocialMediaController {
     private void messageHandler(Context context) throws JsonMappingException, JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         
-        Message book = mapper.readValue(context.body(), Message.class);
-        Message addedMessage = messageService.addMessage(book);
+        Message message = mapper.readValue(context.body(), Message.class);
         
-        if(addedMessage!=null){
-            System.out.println("--"+addedMessage);
-            context.status(200).json(mapper.writeValueAsString(addedMessage));
-        }else{
-            context.status(400);
-        }   
-    }
+        Message addedMessage = messageService.addMessage(message);
+        if(addedMessage != null){
+            
+            context.json(mapper.writeValueAsString(addedMessage));
+        }
+            else{
+                context.status(400);   
+    }}
     private void getAllMessagesHandler(Context ctx) {
         ArrayList<Message> messages = messageService.getAllMessages();
         ctx.json(messages);
     }
+    private String getMessageById(Context context) throws URISyntaxException, IOException {
+        int id = Integer.parseInt(Objects.requireNonNull(( context.pathParam("message_id"))));
+        // ObjectMapper mapper = new ObjectMapper();
+        // Message message = mapper.readValue(context.body(), Message.class);
+        Message addedMessage = messageService.retrieveMessage(id);
+        
+        if(addedMessage!=null){
+        context.status(200).json(addedMessage);        
+        }
+        return null;
+    }
+    private void deleteMessageById(Context context) throws URISyntaxException, IOException {
+        int id = Integer.parseInt(Objects.requireNonNull(( context.pathParam("message_id"))));
+        
+        Message addedMessage = messageService.retrieveMessage(id);
+        System.out.println("--"+id+addedMessage);
+        if(addedMessage!=null){
+        context.status(200).json(addedMessage);
+        messageService.deleteMessage(id);       
+        }
+        if(addedMessage==null){
+        context.status(200).json("");
+    }}
 }
 
 

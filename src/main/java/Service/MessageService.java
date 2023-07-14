@@ -38,17 +38,46 @@ public class MessageService {
 
     
     public Message addMessage(Message message) {        
-        ArrayList<Account> list = new ArrayList<>();
-        list = accountDAO.getAllAccounts();
-        Integer user = message.posted_by;
-        boolean ans = list.contains(user);
-        Message name = new Message();
-        if (ans || message.message_text!="" || message.message_text.length() < 255) {
-            name = MessageDAO.insertMessage(message);
-            return name;
-        } else {
-           return null;
-        }
-        
+        // ArrayList<Message> list = new ArrayList<>();
+        // list = messageDAO.getAllMessages();
+        // Message user = new Message();
+        // boolean ans = list.contains(message);
+            Message name = new Message();
+    if (message.message_text =="" || message.message_text.length() >= 255){
+        return null;
     }
+    if (message.message_text !="" && message.message_text.length() < 255){
+        name = MessageDAO.insertMessage(message);
+   }return name;
+}
+public Message retrieveMessage(int id) {        
+    ArrayList<Message> list = new ArrayList<>();
+    list = messageDAO.getAllMessages();
+    Message name = new Message();    
+    // boolean ans = list.contains(message);
+    for(Message i : list){
+        if(i.message_id==id){
+            name = messageDAO.getMessageById(id);
+        }
+        if(i.message_id!=id){
+            return null;
+        }
+    }       
+            return name;
+}
+public Message deleteMessage(int id) {        
+    ArrayList<Message> list = new ArrayList<>();
+    list = messageDAO.getAllMessages();
+    Message name = new Message();    
+    // boolean ans = list.contains(message);
+    for(Message i : list){
+        if(i.message_id==id){
+            name = messageDAO.deleteMessageById(id);
+        }
+        if(i.message_id!=id){
+            return null;
+        }
+    }       
+            return name;
+}
 }
