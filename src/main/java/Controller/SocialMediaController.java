@@ -140,7 +140,7 @@ public class SocialMediaController {
         Message message = mapper.readValue(context.body(), Message.class);
         
         int id = Integer.parseInt(Objects.requireNonNull(( context.pathParam("message_id"))));
-        Message addedMessage = messageService.retrieveMessage(id);
+        Message addedMessage = messageService.retrieveMessage(message.message_id);
         
         Message addedMessage2=(messageService.updateMessage(addedMessage, message));
         
