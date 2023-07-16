@@ -80,4 +80,20 @@ public Message deleteMessage(int id) {
     }       
             return name;
 }
-}
+public Message updateMessage(Message message, Message newMessage) {        
+    ArrayList<Message> list = new ArrayList<>();
+    list = messageDAO.getAllMessages();
+    // Message name = new Message();    
+    
+    // boolean ans = list.contains(id);
+    
+    if( !list.contains(message) || newMessage.message_text == "" ||  newMessage.message_text.length() >= 255){
+        return null;
+    }
+        if(list.contains(message) && newMessage.message_text != "" && newMessage.message_text.length() < 255){
+            return (MessageDAO.updateMessageById(message, newMessage));
+        }
+        
+    
+    return null;
+}}

@@ -52,6 +52,7 @@ public class SocialMediaController {
         app.get("/messages", this::getAllMessagesHandler);
         app.get("/messages/{message_id}", this::getMessageById);
         app.delete("/messages/{message_id}", this::deleteMessageById);
+        app.patch("/messages/{message_id}", this::updateMessage);
         return app;
     }
 
@@ -126,7 +127,7 @@ public class SocialMediaController {
         int id = Integer.parseInt(Objects.requireNonNull(( context.pathParam("message_id"))));
         
         Message addedMessage = messageService.retrieveMessage(id);
-        System.out.println("--"+id+addedMessage);
+        
         if(addedMessage!=null){
         context.status(200).json(addedMessage);
         messageService.deleteMessage(id);       
@@ -134,6 +135,27 @@ public class SocialMediaController {
         if(addedMessage==null){
         context.status(200).json("");
     }}
-}
+    private void updateMessage(Context context) throws URISyntaxException, IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        Message message = mapper.readValue(context.body(), Message.class);
+        
+        int id = Integer.parseInt(Objects.requireNonNull(( context.pathParam("message_id"))));
+        Message addedMessage = messageService.retrieveMessage(id);
+        
+        Message addedMessage2=(messageService.updateMessage(addedMessage, message));
+        
+        System.out.println("--"+id+ addedMessage);
+        if(addedMessage2 != null){
+        context.json(addedMessage2); 
+        }
+        if(addedMessage2 == null){
+            context.status(400); 
+            }
+      }
+        
+        }
+        
+    
+
 
 

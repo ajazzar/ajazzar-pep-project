@@ -149,4 +149,47 @@ public class MessageDAO {
         }
         return null;
     }
+    public static Message updateMessageById(Message message, Message newMessage){
+        Connection connection = ConnectionUtil.getConnection();
+        Message messages = new Message();
+        
+        String sql = "UPDATE Message SET message_text=? where message_id=?, posted_by=?, time_posted_epoch=?";
+        try {
+            
+            //Write SQL logic here
+            
+            
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+
+            //write preparedStatement's setString and setInt methods here.
+            
+            preparedStatement.setString(1, newMessage.message_text);
+            preparedStatement.setInt(2, message.message_id);
+            preparedStatement.setInt(3, message.posted_by);
+            // preparedStatement.setString(4, message.message_text);
+            preparedStatement.setLong(4, message.time_posted_epoch);
+            // preparedStatement.setInt(2, total.message_id);
+            
+            // preparedStatement.setString(4, total.message_text);
+            
+            ResultSet rs = preparedStatement.executeQuery();
+           
+            while(rs.next()){
+                   Message result=(new Message(rs.getInt("message_id"),
+                        rs.getInt("posted_by"),
+                        rs.getString("message_text"),
+                        rs.getLong("time_posted_epoch")));
+                    messages=(result);
+            }
+            return messages;
+            
+            
+            
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        
+        return messages;
+        
+    }
 }
