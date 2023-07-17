@@ -7,9 +7,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashSet;
+
 
 
 public class AccountDAO {
@@ -35,24 +34,17 @@ public class AccountDAO {
     public static Account getAccount(Account account){
         Connection connection = ConnectionUtil.getConnection();
         Account result = new Account();
-        
-        // int generatedkey = 0;
         try {
             //Write SQL logic here
             String sql = "select * from Account where username=? AND password=?";
-            // int generatedkey=0;
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
             //write preparedStatement's setInt method here.
-            // preparedStatement.setInt(1, account.account_id);
-            // preparedStatement.setInt(1, account.getAccount_id());
             preparedStatement.setString(1, account.username);
             preparedStatement.setString(2, account.password);
             
-            
             ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
-                System.out.println("--"+rs.getString("username") + ", " + rs.getString("password"));
                 result = new Account(rs.getInt("account_id"),
                 rs.getString("username"),
                 rs.getString("password"));
@@ -67,22 +59,19 @@ public class AccountDAO {
     public static Account insertAccount(Account account){
         Connection connection = ConnectionUtil.getConnection();
         try {
-            
             //Write SQL logic here
             String sql = "Insert into Account (username, password) values (?,?)" ;
             int generatedkey=0;
             PreparedStatement preparedStatement = connection.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
 
             //write preparedStatement's setString and setInt methods here.
-            // preparedStatement.setInt(1, account.getAccount_id());
             preparedStatement.setString(1, account.getUsername());
             preparedStatement.setString(2, account.getPassword());
             preparedStatement.executeUpdate();
            ResultSet rs = preparedStatement.getGeneratedKeys();
     if(rs.next()) {
     //In this exp, the autoKey val is in 1st col
-    generatedkey=rs.getInt(1);   
-            //    System.out.println("--" + generatedkey); 
+    generatedkey=rs.getInt(1);    
                account.setAccount_id(generatedkey);
     }
             
